@@ -1,3 +1,5 @@
-O O O
-O A O
-O O T
+W O O O W
+W O O O W
+W O A O W
+W O O T W
+W W W W W
