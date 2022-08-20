@@ -1,0 +1,170 @@
+import gym
+import numpy as np
+
+
+# UP = 0
+# DOWN = 1
+# LEFT = 2
+# RIGHT = 3
+# actions are continuous.
+
+"""
+A: Agent
+T: Target location
+O: Empty spot
+W: Wall
+"""
+
+'O O O\nO A O\nO O T'
+
+class GridEnv(gym.Env):
+    def __init__(self, init_chars_representation='O O O\nO A O\nO O T', max_steps=100, r_fall_off=-1, r_reach_target=1, r_timeout=0, r_continue=0, render_mode='chars_world'):
+        """
+        For reward function:
+            Falling off the edge = r_fall_off
+            Reached Target = r_reach_target
+            Timeout = r_timeout
+            Continue one step = r_continue
+        
+        For action_space:
+            UP/DOWN = action[0]
+            LEFT/RIGHT = action[1]
+            Agent will:
+            action[0]>0.5 -> try to go UP
+            action[0]<=-0.5 -> try to go DOWN
+            action[1]>0.5 -> try to go RIGHT
+            action[1]<=-0.5 -> try to go LEFT
+            
+        
+        For Char Representation:
+            A: Agent
+            T: Target location
+            O: Empty spot
+            W: Wall
+
+        Args:
+            chars_representation (str, optional): _description_. Defaults to 'O O O\nO A O\nO O T'.
+            render_mode (str, optional): 'chars_world' or 'rgb_array'. Defaults to 'chars_world'.
+        """
+        self.init_chars_representation = init_chars_representation
+        self.max_steps = max_steps
+        self.r_fall_off = r_fall_off
+        self.r_reach_target = r_reach_target
+        self.r_timeout = r_timeout
+        self.r_continue = r_continue
+        self.chars_world, self.width, self.height = self.chars_to_world(self.init_chars_representation)
+        self.action_space = gym.spaces.Box(low=np.array([-1, -1]), high=np.array([1, 1]), shape=2, dtype=np.float32)
+        self.observation_space = gym.spaces.Space(shape=self.chars_world.shape, dtype=self.chars_world.dtype)
+        self.render_mode = render_mode
+        self.renderer = None
+        if self.render_mode == 'rgb_array':
+            self.renderer = gym.utils.Renderer(self.render_mode, self._render_frame)
+        
+    
+    def reset(self, seed=None, return_info=False, options=None):
+        self.step = 0
+        self.chars_world, self.width, self.height = self.chars_to_world(self.init_chars_representation)
+        a_arr_loc = np.where(self.chars_world == 'A')
+        self.a_y = a_arr_loc[0][0]
+        self.a_x = a_arr_loc[1][0]
+        
+    def step(self, action: np.ndarray):
+        assert self.a_x >= 0 and self.a_x < self.width and self.a_y >= 0 and self.a_y < self.height
+        if self.step >= self.max_steps:
+            obs = self.chars_world # agent is still kept the world where it was last seen.
+            reward = self.r_timeout
+            terminated = False
+            truncated = True
+            done = True
+            info = {
+                'chars_world': self.chars_world,
+                'terminated': terminated,
+                'truncated': truncated,
+                'done': done,
+            }
+            return obs, reward, done, info
+        if action[0] > 0.5: # going up
+            result = self.move_to(self.a_y-1, self.a_x)
+        elif action[0] < -0.5: # going down
+            result = self.move_to(self.a_y+1, self.a_x)
+        elif action[1] > 0.5: # going right
+            result = self.move_to(self.a_y, self.a_x+1)
+        elif action[1] < -0.5: # going left
+            result = self.move_to(self.a_y, self.a_x-1)
+        else:
+            result = 'stay' # stay in the same place
+        
+        if result == 'fall':
+            obs = self.chars_world # agent is still kept the world where it was last seen.
+            reward = self.r_fall_off
+            terminated = True
+            truncated = False
+            done = True
+            info = {
+                'chars_world': self.chars_world,
+                'terminated': terminated,
+                'truncated': truncated,
+                'done': done,
+            }
+            return obs, reward, done, info
+        elif result == 'target':
+            obs = self.chars_world # agent is still kept the world where it was last seen.
+            reward = self.r_reach_target
+            terminated = True
+            truncated = False
+            done = True
+            info = {
+                'chars_world': self.chars_world,
+                'terminated': terminated,
+                'truncated': truncated,
+                'done': done,
+            }
+            return obs, reward, done, info
+        else:
+            assert result in ['success', 'fail', 'stay']
+            
+        self.step += 1
+        
+        obs = self.chars_world # agent is still kept the world where it was last seen.
+        reward = self.r_continue
+        terminated = False
+        truncated = False
+        done = False
+        info = {
+            'chars_world': self.chars_world,
+            'terminated': terminated,
+            'truncated': truncated,
+            'done': done,
+        }
+        return obs, reward, done, info
+        
+    def move_to(self, y, x):
+        """move result should be one of:
+            'success'
+            'fail'
+            'fall'
+            'target'
+        """
+        
+        if not (x >= 0 and x < self.width and y >= 0 and y < self.height):
+            return 'fall'
+        elif self.chars_world[y, x] == 'O':
+            self.chars_world[self.a_y, self.a_x] = 'O'
+            self.chars_world[y, x] = 'A'
+            self.a_y = y
+            self.a_x = x
+            return 'success'
+        elif self.chars_world[y, x] == 'W':
+            return 'fail'
+        elif self.chars_world[y, x] == 'T':
+            return 'target'
+        else:
+            raise Exception(f'Unknown char: {self.chars_world[y, x]}, y: {y}, x: {x}, chars_world: {str(self.char_world)}')
+        
+    def chars_to_world(chars_representation):
+        chars_world = np.array([line.split(' ') for line in chars_representation.split('\n')], dtype='<U1')
+        height, width = chars_world.shape
+        return chars_world, width, height
+    
+    def chars_world_to_rgb_array(chars_world):
+        pass
