@@ -81,6 +81,13 @@ class GridEnv(gym.Env):
             render_mode (str, optional): 'chars_world' or 'rgb_array'. Defaults to 'chars_world'.
         """
         self.actions=Actions()
+        self.colors = {
+            'A': [255, 0, 0], # red
+            'T': [0, 255, 0], # green
+            'O': [0, 0, 0], # black
+            'W': [255, 255, 255], # white
+            'H': [0, 0, 255], # blue
+        }
         if load_chars_rep_fromd_dir:
             with open(load_chars_rep_fromd_dir, 'r') as f:
                 self.init_chars_representation = f.read()
@@ -217,4 +224,19 @@ class GridEnv(gym.Env):
         return chars_world, width, height
     
     def chars_world_to_rgb_array(self, chars_world):
-        pass
+        rgb_image = np.zeros((*chars_world.shape,3), dtype='uint8')
+        for x in range(chars_world.shape[1]):
+            for y in range(chars_world.shape[0]):
+                if chars_world[y, x] == 'A':
+                    rgb_image[y, x, :] = self.colors['A']
+                elif chars_world[y, x] == 'T':
+                    rgb_image[y, x, :] = self.colors['T']
+                elif chars_world[y, x] == 'O':
+                    rgb_image[y, x, :] = self.colors['O']
+                elif chars_world[y, x] == 'W':
+                    rgb_image[y, x, :] = self.colors['W']
+                elif chars_world[y, x] == 'H':
+                    rgb_image[y, x, :] = self.colors['H']
+                else:
+                    raise Exception(f'Unknown char: {chars_world[y, x]}, y: {y}, x: {x}, chars_world: {str(chars_world)}')
+        return rgb_image
