@@ -5,6 +5,12 @@ This is a simple yet efficient, highly customizable grid-world implementation to
 
 The official documentation is here `https://rlgridworld.readthedocs.io/ <https://rlgridworld.readthedocs.io/>`_
 
+install with
+
+.. code-block:: bash
+    
+    pip install rlgridworld
+
 
 Environment
 -----------
