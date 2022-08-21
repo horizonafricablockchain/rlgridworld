@@ -56,7 +56,7 @@ class Actions:
     
 
 class GridEnv(gym.Env):
-    def __init__(self, load_chars_rep_fromd_dir='', init_chars_representation='O O O\nO A O\nO O T', max_steps=100, r_fall_off=-1, r_reach_target=1, r_timeout=0, r_continue=0, render_mode='chars_world', render_width=0, render_height=0):
+    def __init__(self, load_chars_rep_fromd_dir='', init_chars_representation='O O O\nO A O\nO O T', max_steps=100, r_fall_off=-1, r_reach_target=1, r_timeout=0, r_continue=0, render_mode='human', obs_mode='single_rgb_array', render_width=0, render_height=0):
         """
         For reward function:
             Falling off the edge = r_fall_off
@@ -79,7 +79,8 @@ class GridEnv(gym.Env):
             r_reach_target (int, optional): reward for reaching target. Defaults to 1.
             r_timeout (int, optional): reward for ending the game with timeout. Defaults to 0.
             r_continue (int, optional): reward for continuing the game. Defaults to 0.
-            render_mode (str, optional): 'chars_world' or 'single_rgb_array'. Defaults to 'chars_world'.
+            render_mode (str, optional): None, 'chars_world' or 'single_rgb_array'. Defaults to 'chars_world'.
+            obs_mode (str, optional): 'chars_world' or 'single_rgb_array'. Defaults to 'single_rgb_array'.
             render_width (int, optional): width of the rendered image. If 0, use the original size of char_world. Defaults to 0.
             render_height (int, optional): height of the rendered image. If 0, use the original size of char_world. Defaults to 0.
         """
@@ -105,6 +106,7 @@ class GridEnv(gym.Env):
         self.action_space = gym.spaces.Box(low=np.array([-1, -1]), high=np.array([1, 1]), dtype=np.float32)
         self.observation_space = gym.spaces.Space(shape=self.chars_world.shape, dtype=self.chars_world.dtype)
         self.render_mode = render_mode
+        self.obs_mode = obs_mode
         self.render_width = render_width
         self.render_height = render_height
         # self.renderer = None
@@ -247,19 +249,21 @@ class GridEnv(gym.Env):
         return rgb_image
     
     def chars_world_to_obs(self, chars_world):
-        if self.render_mode == 'chars_world':
+        if self.obs_mode == 'chars_world':
             return chars_world
-        elif self.render_mode == 'single_rgb_array':
+        elif self.obs_mode == 'single_rgb_array':
             rgb_img_array = self.chars_world_to_rgb_array(chars_world)
             if self.render_width == 0 and self.render_height == 0:
                 return rgb_img_array
             else:
                 return cv2.resize(rgb_img_array, (self.render_width, self.render_height), interpolation = cv2.INTER_NEAREST)  
         else:
-            raise Exception(f'Unknown render mode: {self.render_mode}')
+            raise Exception(f'Unknown obs mode: {self.obs_mode}')
         
     def render(self, mode="human"):
-        if mode == "human":
+        if mode is None:
+            return None
+        elif mode == "human":
             cv2.imshow("Game", self.canvas)
             cv2.waitKey(10)
         elif mode == "single_rgb_array":
