@@ -3,6 +3,19 @@ import numpy as np
 
 
 class Actions:
+    """Contiguous:
+        Action is a tuple of length 2, where the first element is the x-axis and the second element is the y-axis.
+        UP/DOWN -> action[0]
+        LEFT/RIGHT -> action[1]
+        Agent will:
+        action[0]>0.5 -> try to go UP
+        action[0]<=-0.5 -> try to go DOWN
+        action[1]>0.5 -> try to go RIGHT
+        action[1]<=-0.5 -> try to go LEFT
+        
+        Discrete: Action can be chosen from 
+        ['UP', 'DOWN', 'RIGHT', 'LEFT', 'UPRIGHT', 'UPLEFT', 'DOWNRIGHT', 'DOWNLEFT']
+    """
     
     def __init__(self):
         self.actions={
@@ -48,17 +61,7 @@ class GridEnv(gym.Env):
             Falling off the edge = r_fall_off
             Reached Target = r_reach_target
             Timeout = r_timeout
-            Continue one step = r_continue
-        
-        For action_space:
-            UP/DOWN = action[0]
-            LEFT/RIGHT = action[1]
-            Agent will:
-            action[0]>0.5 -> try to go UP
-            action[0]<=-0.5 -> try to go DOWN
-            action[1]>0.5 -> try to go RIGHT
-            action[1]<=-0.5 -> try to go LEFT
-            
+            Continue one step = r_continue            
         
         For Char Representation:
             A: Agent
