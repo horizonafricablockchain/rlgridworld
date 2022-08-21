@@ -27,6 +27,12 @@ to represent a grid-world, where
     * W: Wall
     * H: Hole (where the agent will fall if it steps in)
 
+The rgb_array rendering of which is:
+
+.. image:: imgs/ExampleFile.png
+  :width: 400
+  :alt: Alternative text
+
 The goal of the agent is to reach one of the Target locations without falling into a hole or falling out of the edge.
 (More pre-configured environments can be found in EnvSettings)
 
