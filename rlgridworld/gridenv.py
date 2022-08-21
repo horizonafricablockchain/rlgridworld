@@ -18,7 +18,7 @@ W: Wall
 'O O O\nO A O\nO O T'
 
 class GridEnv(gym.Env):
-    def __init__(self, init_chars_representation='O O O\nO A O\nO O T', max_steps=100, r_fall_off=-1, r_reach_target=1, r_timeout=0, r_continue=0, render_mode='chars_world'):
+    def __init__(self, load_chars_rep_fromd_dir='', init_chars_representation='O O O\nO A O\nO O T', max_steps=100, r_fall_off=-1, r_reach_target=1, r_timeout=0, r_continue=0, render_mode='chars_world'):
         """
         For reward function:
             Falling off the edge = r_fall_off
@@ -46,14 +46,28 @@ class GridEnv(gym.Env):
             chars_representation (str, optional): _description_. Defaults to 'O O O\nO A O\nO O T'.
             render_mode (str, optional): 'chars_world' or 'rgb_array'. Defaults to 'chars_world'.
         """
-        self.init_chars_representation = init_chars_representation
+        self.actions={
+            'UP': np.array([1.0, 0.0]),
+            'DOWN': np.array([-1.0, 0.0]),
+            'RIGHT': np.array([0.0, 1.0]),
+            'LEFT': np.array([0.0, -1.0]),
+            'UPRIGHT': np.array([1.0, 1.0]),
+            'UPLEFT': np.array([1.0, -1.0]),
+            'DOWNRIGHT': np.array([-1.0, 1.0]),
+            'DOWNLEFT': np.array([-1.0, -1.0]),
+        }
+        if load_chars_rep_fromd_dir:
+            with open(load_chars_rep_fromd_dir, 'r') as f:
+                self.init_chars_representation = f.read()
+        else:
+            self.init_chars_representation = init_chars_representation
         self.max_steps = max_steps
         self.r_fall_off = r_fall_off
         self.r_reach_target = r_reach_target
         self.r_timeout = r_timeout
         self.r_continue = r_continue
         self.chars_world, self.width, self.height = self.chars_to_world(self.init_chars_representation)
-        self.action_space = gym.spaces.Box(low=np.array([-1, -1]), high=np.array([1, 1]), shape=2, dtype=np.float32)
+        self.action_space = gym.spaces.Box(low=np.array([-1, -1]), high=np.array([1, 1]), dtype=np.float32)
         self.observation_space = gym.spaces.Space(shape=self.chars_world.shape, dtype=self.chars_world.dtype)
         self.render_mode = render_mode
         self.renderer = None
@@ -172,10 +186,10 @@ class GridEnv(gym.Env):
         else:
             raise Exception(f'Unknown char: {self.chars_world[y, x]}, y: {y}, x: {x}, chars_world: {str(self.char_world)}')
         
-    def chars_to_world(chars_representation):
+    def chars_to_world(self, chars_representation):
         chars_world = np.array([line.split(' ') for line in chars_representation.split('\n')], dtype='<U1')
         height, width = chars_world.shape
         return chars_world, width, height
     
-    def chars_world_to_rgb_array(chars_world):
+    def chars_world_to_rgb_array(self, chars_world):
         pass
