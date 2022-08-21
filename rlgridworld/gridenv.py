@@ -120,6 +120,8 @@ class GridEnv(gym.Env):
         a_arr_loc = np.where(self.chars_world == 'A')
         self.a_y = a_arr_loc[0][0]
         self.a_x = a_arr_loc[1][0]
+        obs = self.chars_world_to_obs(self.chars_world)
+        return obs
         
     def step(self, action: np.ndarray):
         assert self.a_x >= 0 and self.a_x < self.width and self.a_y >= 0 and self.a_y < self.height
@@ -184,7 +186,7 @@ class GridEnv(gym.Env):
             
         self.step_count += 1
         
-        obs = self.chars_world_to_obs(self.chars_world) # agent is still kept the world where it was last seen.
+        obs = self.chars_world_to_obs(self.chars_world)
         reward = self.r_continue
         terminated = False
         truncated = False
