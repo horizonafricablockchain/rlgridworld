@@ -117,7 +117,7 @@ class GridEnv(gym.Env):
     def step(self, action: np.ndarray):
         assert self.a_x >= 0 and self.a_x < self.width and self.a_y >= 0 and self.a_y < self.height
         if self.step_count >= self.max_steps:
-            obs = self.chars_world # agent is still kept the world where it was last seen.
+            obs = self.chars_world_to_obs(self.chars_world) # agent is still kept the world where it was last seen.
             reward = self.r_timeout
             terminated = False
             truncated = True
@@ -144,7 +144,7 @@ class GridEnv(gym.Env):
             self.move_to(self.a_y, self.a_x-1, result)
         
         if result[0] == 1: # fall
-            obs = self.chars_world # agent is still kept the world where it was last seen.
+            obs = self.chars_world_to_obs(self.chars_world) # agent is still kept the world where it was last seen.
             reward = self.r_fall_off
             terminated = True
             truncated = False
@@ -158,7 +158,7 @@ class GridEnv(gym.Env):
             }
             return obs, reward, done, info
         elif result[3] == 1: # reach target
-            obs = self.chars_world # agent is still kept the world where it was last seen.
+            obs = self.chars_world_to_obs(self.chars_world) # agent is still kept the world where it was last seen.
             reward = self.r_reach_target
             terminated = True
             truncated = False
@@ -174,7 +174,7 @@ class GridEnv(gym.Env):
             
         self.step_count += 1
         
-        obs = self.chars_world # agent is still kept the world where it was last seen.
+        obs = self.chars_world_to_obs(self.chars_world) # agent is still kept the world where it was last seen.
         reward = self.r_continue
         terminated = False
         truncated = False
@@ -240,3 +240,11 @@ class GridEnv(gym.Env):
                 else:
                     raise Exception(f'Unknown char: {chars_world[y, x]}, y: {y}, x: {x}, chars_world: {str(chars_world)}')
         return rgb_image
+    
+    def chars_world_to_obs(self, chars_world):
+        if self.render_mode == 'chars_world':
+            return chars_world
+        elif self.render_mode == 'rgb_array':
+            return self.chars_world_to_rgb_array(chars_world)
+        else:
+            raise Exception(f'Unknown render mode: {self.render_mode}')
