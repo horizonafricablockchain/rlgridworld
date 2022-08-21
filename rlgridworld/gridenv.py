@@ -122,7 +122,7 @@ class GridEnv(gym.Env):
                 'done': done,
             }
             return obs, reward, done, info
-        
+
         result = [0,0,0,0] 
         # the first, second, third and last zeros represents 'fall', 'fail', 'success', 'target'.
         # if result == [0,0,0,0], means the agent stays in the same place without a moving action. 
