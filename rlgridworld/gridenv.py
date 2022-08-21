@@ -107,9 +107,9 @@ class GridEnv(gym.Env):
         self.render_mode = render_mode
         self.render_width = render_width
         self.render_height = render_height
-        self.renderer = None
-        if self.render_mode == 'single_rgb_array':
-            self.renderer = gym.utils.Renderer(self.render_mode, self._render_frame)
+        # self.renderer = None
+        # if self.render_mode == 'single_rgb_array':
+        #     self.renderer = gym.utils.Renderer(self.render_mode, self._render_frame)
         
     
     def reset(self, seed=None, return_info=False, options=None):
@@ -264,3 +264,6 @@ class GridEnv(gym.Env):
             cv2.waitKey(10)
         elif mode == "single_rgb_array":
             return self.chars_world_to_rgb_array(self.chars_world)
+        
+    def close(self):
+        cv2.destroyAllWindows()
