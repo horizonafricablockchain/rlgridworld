@@ -3,6 +3,8 @@ RLGridWorld
 
 This is a simple yet efficient, highly customizable grid-world implementation to run reinforcement learning algorithms.
 
+The official documentation is here `https://rlgridworld.readthedocs.io/ <https://rlgridworld.readthedocs.io/>`_
+
 
 Environment
 -----------
