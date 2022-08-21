@@ -9,7 +9,7 @@ Enviornment
 
 You can simply use string like 
 
-.. code-block:: txt
+.. code-block:: text
 
 W H T O W
 W O O H W
