@@ -2,21 +2,6 @@ import gym
 import numpy as np
 
 
-# UP = 0
-# DOWN = 1
-# LEFT = 2
-# RIGHT = 3
-# actions are continuous.
-
-"""
-A: Agent
-T: Target location
-O: Empty spot
-W: Wall
-"""
-
-'O O O\nO A O\nO O T'
-
 class Actions:
     
     def __init__(self):
@@ -78,8 +63,9 @@ class GridEnv(gym.Env):
         For Char Representation:
             A: Agent
             T: Target location
-            O: Empty spot
+            O: Empty Ground spot (where the agent can step on and stay)
             W: Wall
+            H: Hole (where the agent will fall if it steps in)
 
         Args:
             chars_representation (str, optional): _description_. Defaults to 'O O O\nO A O\nO O T'.
@@ -197,7 +183,7 @@ class GridEnv(gym.Env):
             that is represented by the first, second, third and last element of result.
         """
         
-        if not (x >= 0 and x < self.width and y >= 0 and y < self.height):
+        if (not (x >= 0 and x < self.width and y >= 0 and y < self.height)) or self.chars_world[y, x] == 'H':
             result[0] = 1
             return 'fall'
         elif self.chars_world[y, x] == 'O':
