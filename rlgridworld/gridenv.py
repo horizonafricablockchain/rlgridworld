@@ -135,6 +135,7 @@ class GridEnv(gym.Env):
                 'truncated': truncated,
                 'done': done,
             }
+            self.render(mode=self.render_mode)
             return obs, reward, done, info
 
         result = [0,0,0,0] 
@@ -163,6 +164,7 @@ class GridEnv(gym.Env):
                 'done': done,
                 'move_result': result,
             }
+            self.render(mode=self.render_mode)
             return obs, reward, done, info
         elif result[3] == 1: # reach target
             obs = self.chars_world_to_obs(self.chars_world) # agent is still kept the world where it was last seen.
@@ -177,6 +179,7 @@ class GridEnv(gym.Env):
                 'done': done,
                 'move_result': result,
             }
+            self.render(mode=self.render_mode)
             return obs, reward, done, info
             
         self.step_count += 1
@@ -193,6 +196,7 @@ class GridEnv(gym.Env):
             'done': done,
             'move_result': result,
         }
+        self.render(mode=self.render_mode)
         return obs, reward, done, info
         
     def move_to(self, y, x, result):
