@@ -11,11 +11,11 @@ You can simply use string like
 
 .. code-block:: text
 
-W H T O W
-W O O H W
-W O A O W
-W O O T W
-W W W W W
+    W H T O W
+    W O O H W
+    W O A O W
+    W O O T W
+    W W W W W
 
 to represent a grid-world, where
 
