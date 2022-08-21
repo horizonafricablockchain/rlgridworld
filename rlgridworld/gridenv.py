@@ -17,6 +17,45 @@ W: Wall
 
 'O O O\nO A O\nO O T'
 
+class Actions:
+    
+    def __init__(self):
+        self.actions={
+            'UP': np.array([1.0, 0.0]),
+            'DOWN': np.array([-1.0, 0.0]),
+            'RIGHT': np.array([0.0, 1.0]),
+            'LEFT': np.array([0.0, -1.0]),
+            'UPRIGHT': np.array([1.0, 1.0]),
+            'UPLEFT': np.array([1.0, -1.0]),
+            'DOWNRIGHT': np.array([-1.0, 1.0]),
+            'DOWNLEFT': np.array([-1.0, -1.0]),
+        }
+    
+    def UP(self):
+        return self.actions['UP'].copy()
+    
+    def DOWN(self):
+        return self.actions['DOWN'].copy()
+    
+    def RIGHT(self):
+        return self.actions['RIGHT'].copy()
+    
+    def LEFT(self):
+        return self.actions['LEFT'].copy()
+    
+    def UPRIGHT(self):
+        return self.actions['UPRIGHT'].copy()
+    
+    def UPLEFT(self):
+        return self.actions['UPLEFT'].copy()
+    
+    def DOWNRIGHT(self):
+        return self.actions['DOWNRIGHT'].copy()
+    
+    def DOWNLEFT(self):
+        return self.actions['DOWNLEFT'].copy()
+    
+
 class GridEnv(gym.Env):
     def __init__(self, load_chars_rep_fromd_dir='', init_chars_representation='O O O\nO A O\nO O T', max_steps=100, r_fall_off=-1, r_reach_target=1, r_timeout=0, r_continue=0, render_mode='chars_world'):
         """
@@ -46,16 +85,7 @@ class GridEnv(gym.Env):
             chars_representation (str, optional): _description_. Defaults to 'O O O\nO A O\nO O T'.
             render_mode (str, optional): 'chars_world' or 'rgb_array'. Defaults to 'chars_world'.
         """
-        self.actions={
-            'UP': np.array([1.0, 0.0]),
-            'DOWN': np.array([-1.0, 0.0]),
-            'RIGHT': np.array([0.0, 1.0]),
-            'LEFT': np.array([0.0, -1.0]),
-            'UPRIGHT': np.array([1.0, 1.0]),
-            'UPLEFT': np.array([1.0, -1.0]),
-            'DOWNRIGHT': np.array([-1.0, 1.0]),
-            'DOWNLEFT': np.array([-1.0, -1.0]),
-        }
+        self.actions=Actions()
         if load_chars_rep_fromd_dir:
             with open(load_chars_rep_fromd_dir, 'r') as f:
                 self.init_chars_representation = f.read()
