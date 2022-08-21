@@ -106,7 +106,7 @@ class GridEnv(gym.Env):
         
     
     def reset(self, seed=None, return_info=False, options=None):
-        self.step = 0
+        self.step_count = 0
         self.chars_world, self.width, self.height = self.chars_to_world(self.init_chars_representation)
         a_arr_loc = np.where(self.chars_world == 'A')
         self.a_y = a_arr_loc[0][0]
@@ -114,7 +114,7 @@ class GridEnv(gym.Env):
         
     def step(self, action: np.ndarray):
         assert self.a_x >= 0 and self.a_x < self.width and self.a_y >= 0 and self.a_y < self.height
-        if self.step >= self.max_steps:
+        if self.step_count >= self.max_steps:
             obs = self.chars_world # agent is still kept the world where it was last seen.
             reward = self.r_timeout
             terminated = False
@@ -170,7 +170,7 @@ class GridEnv(gym.Env):
             }
             return obs, reward, done, info
             
-        self.step += 1
+        self.step_count += 1
         
         obs = self.chars_world # agent is still kept the world where it was last seen.
         reward = self.r_continue
