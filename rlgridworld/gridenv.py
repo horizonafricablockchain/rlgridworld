@@ -83,18 +83,21 @@ class GridEnv(gym.Env):
                 'done': done,
             }
             return obs, reward, done, info
-        if action[0] > 0.5: # going up
-            result = self.move_to(self.a_y-1, self.a_x)
-        elif action[0] < -0.5: # going down
-            result = self.move_to(self.a_y+1, self.a_x)
-        elif action[1] > 0.5: # going right
-            result = self.move_to(self.a_y, self.a_x+1)
-        elif action[1] < -0.5: # going left
-            result = self.move_to(self.a_y, self.a_x-1)
-        else:
-            result = 'stay' # stay in the same place
         
-        if result == 'fall':
+        result = [0,0,0,0] 
+        # the first, second, third and last zeros represents 'fall', 'fail', 'success', 'target'.
+        # if result == [0,0,0,0], means the agent stays in the same place without a moving action. 
+        # Note that the agent can both move up and right at one step.
+        if action[0] > 0.5: # going up
+            self.move_to(self.a_y-1, self.a_x, result)
+        if action[0] < -0.5: # going down
+            self.move_to(self.a_y+1, self.a_x, result)
+        if action[1] > 0.5: # going right
+            self.move_to(self.a_y, self.a_x+1, result)
+        if action[1] < -0.5: # going left
+            self.move_to(self.a_y, self.a_x-1, result)
+        
+        if result[0] == 1: # fall
             obs = self.chars_world # agent is still kept the world where it was last seen.
             reward = self.r_fall_off
             terminated = True
@@ -105,9 +108,10 @@ class GridEnv(gym.Env):
                 'terminated': terminated,
                 'truncated': truncated,
                 'done': done,
+                'move_result': result,
             }
             return obs, reward, done, info
-        elif result == 'target':
+        elif result[3] == 1: # reach target
             obs = self.chars_world # agent is still kept the world where it was last seen.
             reward = self.r_reach_target
             terminated = True
@@ -118,10 +122,9 @@ class GridEnv(gym.Env):
                 'terminated': terminated,
                 'truncated': truncated,
                 'done': done,
+                'move_result': result,
             }
             return obs, reward, done, info
-        else:
-            assert result in ['success', 'fail', 'stay']
             
         self.step += 1
         
@@ -135,28 +138,36 @@ class GridEnv(gym.Env):
             'terminated': terminated,
             'truncated': truncated,
             'done': done,
+            'move_result': result,
         }
         return obs, reward, done, info
         
-    def move_to(self, y, x):
-        """move result should be one of:
-            'success'
-            'fail'
+    def move_to(self, y, x, result):
+        """
+            This is the distance=1 move action.
+            move result should be one of:
             'fall'
+            'fail'
+            'success'
             'target'
+            that is represented by the first, second, third and last element of result.
         """
         
         if not (x >= 0 and x < self.width and y >= 0 and y < self.height):
+            result[0] = 1
             return 'fall'
         elif self.chars_world[y, x] == 'O':
             self.chars_world[self.a_y, self.a_x] = 'O'
             self.chars_world[y, x] = 'A'
             self.a_y = y
             self.a_x = x
+            result[2] = 1
             return 'success'
         elif self.chars_world[y, x] == 'W':
+            result[1] = 1
             return 'fail'
         elif self.chars_world[y, x] == 'T':
+            result[3] = 1
             return 'target'
         else:
             raise Exception(f'Unknown char: {self.chars_world[y, x]}, y: {y}, x: {x}, chars_world: {str(self.char_world)}')
