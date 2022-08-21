@@ -4,10 +4,10 @@ RLGridWorld
 This is a simple yet efficient, highly customizable grid-world implementation to run reinforcement learning algorithms.
 
 
-Enviornment
+Environment
 -----------
 
-You can simply use string like 
+You can simply use a string like 
 
 .. code-block:: text
 
@@ -25,6 +25,7 @@ to represent a grid-world, where
     * W: Wall
     * H: Hole (where the agent will fall if it steps in)
 
+The goal of the agent is to reach one of the Target locations without falling into a hole or falling out of the edge.
 (More pre-configured environments can be found in EnvSettings)
 
 
