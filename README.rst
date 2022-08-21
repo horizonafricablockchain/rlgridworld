@@ -41,4 +41,5 @@ The details can be found in the Action class in rlgridworld/gridenv.py
 Reward
 ------
 
-Customizable with r_fall_off, r_reach_target, r_timeout, r_continue
+Customizable with r_fall_off, r_reach_target, r_timeout, r_continue.
+The details can be found in the __init__ function of class GridEnv in rlgridworld/gridenv.py

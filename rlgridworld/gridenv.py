@@ -71,7 +71,13 @@ class GridEnv(gym.Env):
             H: Hole (where the agent will fall if it steps in)
 
         Args:
-            chars_representation (str, optional): _description_. Defaults to 'O O O\nO A O\nO O T'.
+            load_chars_rep_fromd_dir (str, optional): load chars_representation from a txt file. Overwrite init_chars_representation. Defaults to ''.
+            init_chars_representation (str, optional): char representation of this grid-world. Defaults to 'O O O\nO A O\nO O T'.
+            max_steps (int, optional): max game length. Defaults to 100.
+            r_fall_off (int, optional): reward for falling off. Defaults to -1.
+            r_reach_target (int, optional): reward for reaching target. Defaults to 1.
+            r_timeout (int, optional): reward for ending the game with timeout. Defaults to 0.
+            r_continue (int, optional): reward for continuing the game. Defaults to 0.
             render_mode (str, optional): 'chars_world' or 'rgb_array'. Defaults to 'chars_world'.
         """
         self.actions=Actions()
