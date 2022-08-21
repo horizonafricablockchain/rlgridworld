@@ -19,11 +19,11 @@ W W W W W
 
 to represent a grid-world, where
 
-    - A: Agent
-    - T: Target location
-    - O: Empty Ground spot (where the agent can step on and stay)
-    - W: Wall
-    - H: Hole (where the agent will fall if it steps in)
+    * A: Agent
+    * T: Target location
+    * O: Empty Ground spot (where the agent can step on and stay)
+    * W: Wall
+    * H: Hole (where the agent will fall if it steps in)
 
 (More pre-configured environments can be found in EnvSettings)
 
@@ -34,8 +34,8 @@ Actions
 The actions can be continuous or discrete. The agent can also move diagonally.
 The details can be found in the Action class in rlgridworld/gridenv.py
 
-    - Continuous: Action is a tuple of length 2, where the first element is the x-axis and the second element is the y-axis
-    - Discrete: Action can be chosen from ['UP', 'DOWN', 'RIGHT', 'LEFT', 'UPRIGHT', 'UPLEFT', 'DOWNRIGHT', 'DOWNLEFT']
+    * Continuous: Action is a tuple of length 2, where the first element is the x-axis and the second element is the y-axis
+    * Discrete: Action can be chosen from ['UP', 'DOWN', 'RIGHT', 'LEFT', 'UPRIGHT', 'UPLEFT', 'DOWNRIGHT', 'DOWNLEFT']
 
 
 Reward
