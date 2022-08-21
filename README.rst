@@ -27,7 +27,7 @@ to represent a grid-world, where
     * W: Wall
     * H: Hole (where the agent will fall if it steps in)
 
-The rgb_array rendering of which is:
+The single_rgb_array rendering of which is:
 
 .. image:: imgs/ExampleFile.png
   :width: 400
