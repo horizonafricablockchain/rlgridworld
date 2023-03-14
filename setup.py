@@ -33,7 +33,7 @@ with open("requirements.txt", "r") as fh:
 
 setuptools.setup(
     name='rlgridworld',
-    version='0.1003',
+    version='0.1004',
     author="Mohan Zhang",
     author_email="mohan.zhang.mz@gmail.com",
     description="This is a simple yet efficient, highly customizable grid-world implementation to run reinforcement learning algorithms.",
