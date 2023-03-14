@@ -1,6 +1,7 @@
 import gym
 import numpy as np
 import cv2
+import copy
 
 
 class Actions:
@@ -56,7 +57,7 @@ class Actions:
     
 
 class GridEnv(gym.Env):
-    def __init__(self, load_chars_rep_fromd_dir='', init_chars_representation='O O O\nO A O\nO O T', max_steps=100, r_fall_off=-1, r_reach_target=1, r_timeout=0, r_continue=0, render_mode='human', obs_mode='single_rgb_array', render_width=0, render_height=0):
+    def __init__(self, load_chars_rep_fromd_dir='', init_chars_representation='O O O\nO A O\nO O T', max_steps=100, r_fall_off=-1, r_reach_target=1, r_timeout=0, r_continue=0, render_mode='chars_world', obs_mode='single_rgb_array', render_width=0, render_height=0):
         """
         For reward function:
             Falling off the edge = r_fall_off
@@ -266,12 +267,11 @@ class GridEnv(gym.Env):
         else:
             raise Exception(f'Unknown obs mode: {self.obs_mode}')
         
-    def render(self, mode="human"):
+    def render(self, mode="chars_world"):
         if mode is None:
             return None
-        elif mode == "human":
-            cv2.imshow("Game", self.canvas)
-            cv2.waitKey(10)
+        elif mode == "chars_world":
+            return copy.deepcopy(self.chars_world)
         elif mode == "single_rgb_array":
             return self.chars_world_to_rgb_array(self.chars_world)
         

@@ -1,0 +1,13 @@
+sphinxcontrib-napoleon
+myst-parser
+sphinx>=4.0.2
+sphinx_rtd_theme>=1.0.0
+linkify-it-py
+nbsphinx
+
+setuptools
+
+gym
+numpy
+matplotlib
+opencv-python
