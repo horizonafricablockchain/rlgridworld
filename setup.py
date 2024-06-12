@@ -31,6 +31,9 @@ with open("README.rst", "r") as fh:
 with open("requirements.txt", "r") as fh:
     requirements = fh.read()
 
+# Add d3rlpy to the requirements list
+requirements += '\nd3rlpy'
+
 setuptools.setup(
     name='rlgridworld',
     version='0.1004',
